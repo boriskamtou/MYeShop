@@ -1,3 +1,4 @@
+import 'package:e_commerce/providers/cart.dart';
 import 'package:e_commerce/providers/product.dart';
 import 'package:e_commerce/screens/product_detail_screen.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,6 +9,7 @@ class ProductItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final product = Provider.of<Product>(context, listen: false);
+    final cart = Provider.of<Cart>(context, listen: false);
     return GestureDetector(
       onTap: () {
         Navigator.of(context).pushNamed(
@@ -42,7 +44,22 @@ class ProductItem extends StatelessWidget {
             trailing: IconButton(
               icon: Icon(Icons.shopping_cart),
               color: Theme.of(context).accentColor,
-              onPressed: () {},
+              onPressed: () {
+                cart.addItem(product.id, product.price, product.title);
+                Scaffold.of(context).hideCurrentSnackBar();
+                Scaffold.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Added item to cart'),
+                    duration: Duration(seconds: 2),
+                    action: SnackBarAction(
+                      label: 'UNDO',
+                      onPressed: () {
+                        cart.removeSingleItem(product.id);
+                      },
+                    ),
+                  ),
+                );
+              },
             ),
           ),
         ),

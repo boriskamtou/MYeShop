@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "731368758664",
+    "firebase_url": "https://my-eshop-5690b.firebaseio.com",
+    "project_id": "my-eshop-5690b",
+    "storage_bucket": "my-eshop-5690b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:731368758664:android:52660bd94f861ed11aae3d",
+        "android_client_info": {
+          "package_name": "com.boriskamtou.e_commerce"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "731368758664-lcs6q7imi9p4qaivqfmlosg2vb6rc77l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXYTMMbT9Zu1s2odcbTvZKVaDIXifuVWA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "731368758664-lcs6q7imi9p4qaivqfmlosg2vb6rc77l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

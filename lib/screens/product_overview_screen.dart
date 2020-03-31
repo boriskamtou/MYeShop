@@ -1,6 +1,11 @@
+import 'package:e_commerce/providers/cart.dart';
+import 'package:e_commerce/screens/cart_screen.dart';
+import 'package:e_commerce/widgets/app_drawer.dart';
+import 'package:e_commerce/widgets/badge.dart';
 import 'package:flutter/material.dart';
 
 import 'package:e_commerce/widgets/product_grid.dart';
+import 'package:provider/provider.dart';
 
 enum FilterOptions {
   Favorites,
@@ -18,6 +23,7 @@ class _ProductOverViewScreenState extends State<ProductOverViewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: AppDrawer(),
       appBar: AppBar(
         title: Text('My Shop'),
         actions: <Widget>[
@@ -41,7 +47,19 @@ class _ProductOverViewScreenState extends State<ProductOverViewScreen> {
                 value: FilterOptions.All,
               ),
             ],
-          )
+          ),
+          Consumer<Cart>(
+            builder: (_, cart, ch) => Badge(
+              value: cart.itemCount.toString(),
+              child: ch,
+            ),
+            child: IconButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed(CartScreen.routeName);
+              },
+              icon: Icon(Icons.shopping_cart),
+            ),
+          ),
         ],
       ),
       body: ProductsGrid(
