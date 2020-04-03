@@ -74,16 +74,41 @@ class Products with ChangeNotifier {
     }
   }
 
-  void updateProduct(String productId, Product newProduct) {
+  Future<void> updateProduct(String productId, Product newProduct) async {
     final productIndex = _items.indexWhere((prod) => prod.id == productId);
     if (productIndex >= 0) {
+      final url =
+          'https://my-eshop-5690b.firebaseio.com/products/$productId.json';
+
+      await http.patch(url,
+          body: json.encode({
+            'title': newProduct.title,
+            'description': newProduct.description,
+            'imageUrl': newProduct.imageUrl,
+            'price': newProduct.price,
+          }));
+
       _items[productIndex] = newProduct;
       notifyListeners();
     }
   }
 
   void deleteProduct(String productId) {
+    final url =
+        'https://my-eshop-5690b.firebaseio.com/products/$productId.json';
+
+    final existingProductIndex =
+        _items.indexWhere((prod) => prod.id == productId);
     _items.removeWhere((prod) => prod.id == productId);
+    var existingProduct = _items[existingProductIndex];
+
+    http.delete(url).then((_) {
+      existingProduct = null;
+    }).catchError((_) {
+      _items.insert(existingProductIndex, existingProduct);
+    });
+
+    _items.removeAt(existingProductIndex);
     notifyListeners();
   }
 }
