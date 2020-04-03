@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:e_commerce/providers/product.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
@@ -50,16 +52,37 @@ class Products with ChangeNotifier {
     return _items.firstWhere((prod) => prod.id == id);
   }
 
-  void addProduct(Product product) {
-    final newProduct = Product(
-      id: DateTime.now().toString(),
-      title: product.title,
-      description: product.description,
-      price: product.price,
-      imageUrl: product.imageUrl,
+  Future<void> addProduct(Product product) async {
+    const url = 'https://my-eshop-5690b.firebaseio.com/products.json';
+
+  try {
+ final response = await http
+        .post(
+      url,
+      body: json.encode({
+        'title': product.title,
+        'description': product.description,
+        'price': product.price,
+        'imageUrl': product.imageUrl,
+        'isFavorite': product.isFavorite,
+      }),
     );
-    _items.add(newProduct);
-    notifyListeners();
+
+      final newProduct = Product(
+        id: json.decode(response.body)['name'],
+        title: product.title,
+        description: product.description,
+        price: product.price,
+        imageUrl: product.imageUrl,
+      );
+      _items.add(newProduct);
+      notifyListeners();
+  } catch(e){
+    print(e);
+    throw e;
+  }
+
+  
   }
 
   void updateProduct(String productId, Product newProduct) {
