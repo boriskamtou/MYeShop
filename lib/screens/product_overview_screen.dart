@@ -21,7 +21,8 @@ class ProductOverViewScreen extends StatefulWidget {
 
 class _ProductOverViewScreenState extends State<ProductOverViewScreen> {
   bool productFavs = false;
-  bool _isInit = true;
+  var _isInit = true;
+  var _isLoading = false;
   @override
   void initState() {
     super.initState();
@@ -31,11 +32,19 @@ class _ProductOverViewScreenState extends State<ProductOverViewScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    if(_isInit){
-    Provider.of<Products>(context).fetchAndSetProducts();
+    if (_isInit) {
+      setState(() {
+        _isLoading = true;
+      });
+      Provider.of<Products>(context).fetchAndSetProducts().then((_) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
     }
     _isInit = false;
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,9 +87,13 @@ class _ProductOverViewScreenState extends State<ProductOverViewScreen> {
           ),
         ],
       ),
-      body: ProductsGrid(
-        productFavorites: productFavs,
-      ),
+      body: _isLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : ProductsGrid(
+              productFavorites: productFavs,
+            ),
     );
   }
 }
