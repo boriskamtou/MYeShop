@@ -1,4 +1,5 @@
 import 'package:e_commerce/providers/cart.dart';
+import 'package:e_commerce/providers/products.dart';
 import 'package:e_commerce/screens/cart_screen.dart';
 import 'package:e_commerce/widgets/app_drawer.dart';
 import 'package:e_commerce/widgets/badge.dart';
@@ -20,6 +21,21 @@ class ProductOverViewScreen extends StatefulWidget {
 
 class _ProductOverViewScreenState extends State<ProductOverViewScreen> {
   bool productFavs = false;
+  bool _isInit = true;
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if(_isInit){
+    Provider.of<Products>(context).fetchAndSetProducts();
+    }
+    _isInit = false;
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
