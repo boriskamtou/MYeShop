@@ -30,9 +30,7 @@ class _ProductOverViewScreenState extends State<ProductOverViewScreen> {
 
   @override
   void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    if (_isInit) {
+   if (_isInit) {
       setState(() {
         _isLoading = true;
       });
@@ -43,6 +41,7 @@ class _ProductOverViewScreenState extends State<ProductOverViewScreen> {
       });
     }
     _isInit = false;
+    super.didChangeDependencies();
   }
 
   @override
