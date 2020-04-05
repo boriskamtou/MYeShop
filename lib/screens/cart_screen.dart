@@ -36,22 +36,7 @@ class CartScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  FlatButton(
-                    onPressed: () {
-                      //TODO:
-                      Provider.of<Orders>(context, listen: false).addOrders(
-                        cart.items.values.toList(),
-                        cart.totalAccount,
-                      );
-                      cart.clear();
-                    },
-                    child: Text(
-                      'ORDER NOW',
-                      style: TextStyle(
-                        color: Theme.of(context).primaryColor,
-                      ),
-                    ),
-                  ),
+                  OrderButton(cart: cart),
                 ],
               ),
             ),
@@ -69,6 +54,49 @@ class CartScreen extends StatelessWidget {
             ),
           )
         ],
+      ),
+    );
+  }
+}
+
+class OrderButton extends StatefulWidget {
+  const OrderButton({
+    Key key,
+    @required this.cart,
+  }) : super(key: key);
+
+  final Cart cart;
+
+  @override
+  _OrderButtonState createState() => _OrderButtonState();
+}
+
+class _OrderButtonState extends State<OrderButton> {
+  var _isLoading = false;
+  @override
+  Widget build(BuildContext context) {
+    return FlatButton(
+      onPressed: (widget.cart.totalAccount <= 0 || _isLoading)
+          ? null
+          : () async {
+            setState(() {
+              _isLoading = true;
+            });
+            await Provider.of<Orders>(context, listen: false)
+                  .addOrders(
+                widget.cart.items.values.toList(),
+                widget.cart.totalAccount,
+              );
+              setState(() {
+                _isLoading = false;
+              });
+              widget.cart.clear();
+            },
+      child: _isLoading ? CircularProgressIndicator() : Text(
+        'ORDER NOW',
+        style: TextStyle(
+          color: Theme.of(context).primaryColor,
+        ),
       ),
     );
   }
