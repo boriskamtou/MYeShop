@@ -1,10 +1,9 @@
 import 'dart:convert';
 
-import 'package:e_commerce/providers/cart.dart';
-import 'package:e_commerce/widgets/order_item.dart';
 import 'package:flutter/foundation.dart';
-
 import 'package:http/http.dart' as http;
+
+import './cart.dart';
 
 class OrdersItem {
   final String id;
@@ -30,7 +29,7 @@ class Orders with ChangeNotifier {
     final response = await http.get(url);
     final List<OrdersItem> loadedOrders = [];
     final extractedData = json.decode(response.body) as Map<String, dynamic>;
-    if(extractedData == null){
+    if (extractedData == null) {
       return;
     }
     extractedData.forEach((orderId, orderData) {
@@ -39,14 +38,15 @@ class Orders with ChangeNotifier {
           id: orderId,
           amount: orderData['amount'],
           dateTime: DateTime.parse(orderData['dateTime']),
-          products: (orderData['products'])
-              .map((item) => {
-                    CartItem(
-                        id: item['id'],
-                        title: item['title'],
-                        quantity: item['quantity'],
-                        price: item['price'])
-                  })
+          products: (orderData['products'] as List<dynamic>)
+              .map(
+                (item) => CartItem(
+                  id: item['id'],
+                  price: item['price'],
+                  quantity: item['quantity'],
+                  title: item['title'],
+                ),
+              )
               .toList(),
         ),
       );
