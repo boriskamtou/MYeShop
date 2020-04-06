@@ -9,6 +9,17 @@ class Auth with ChangeNotifier {
   DateTime _expiryDate;
   String _userId;
 
+  bool get isAuth {
+    return _token != null;
+  }
+
+  String get token {
+    if(_expiryDate != null && _expiryDate.isAfter(DateTime.now()) && _token != null){
+      return _token;
+    }
+    return null;
+  }
+
   Future<void> _authentication(
       String email, String password, String urlSegment) async {
     try {
@@ -38,7 +49,7 @@ class Auth with ChangeNotifier {
     return _authentication(email, password, 'signUp');
   }
 
-  Future<void> signin(String email, String password) async {
+  Future<void> login(String email, String password) async {
     return _authentication(email, password, 'signInWithPassword');
   }
 }

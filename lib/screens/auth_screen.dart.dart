@@ -101,27 +101,26 @@ class _AuthCardState extends State<AuthCard> {
     'password': '',
   };
 
-void _showErrorDialog(String message) {
+  var _isLoading = false;
+  final _passwordController = TextEditingController();
+  
+  void _showErrorDialog(String message) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-            title: Text('An Error Occurred!'),
-            content: Text(message),
-            actions: <Widget>[
-              FlatButton(
-                child: Text('Okay'),
-                onPressed: () {
-                  Navigator.of(ctx).pop();
-                },
-              )
-            ],
-          ),
+        title: Text('An Error Occurred!'),
+        content: Text(message),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('Okay'),
+            onPressed: () {
+              Navigator.of(ctx).pop();
+            },
+          )
+        ],
+      ),
     );
   }
-
-
-  var _isLoading = false;
-  final _passwordController = TextEditingController();
 
   void _submit() async {
     if (!_formKey.currentState.validate()) {
@@ -137,7 +136,7 @@ void _showErrorDialog(String message) {
       if (_authMode == AuthMode.Login) {
         // Log user in
         await Provider.of<Auth>(context, listen: false)
-            .signin(_authData['email'], _authData['password']);
+            .login(_authData['email'], _authData['password']);
       } else {
         // Sign user up
         await Provider.of<Auth>(context, listen: false)
@@ -158,7 +157,7 @@ void _showErrorDialog(String message) {
       }
       _showErrorDialog(errorMessage);
     } catch (error) {
-     const errorMessage =
+      const errorMessage =
           'Could not authenticate you. Please try again later.';
       _showErrorDialog(errorMessage);
     }
