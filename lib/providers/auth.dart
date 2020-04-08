@@ -14,7 +14,9 @@ class Auth with ChangeNotifier {
   }
 
   String get token {
-    if(_expiryDate != null && _expiryDate.isAfter(DateTime.now()) && _token != null){
+    if (_expiryDate != null &&
+        _expiryDate.isAfter(DateTime.now()) &&
+        _token != null) {
       return _token;
     }
     return null;
@@ -40,6 +42,17 @@ class Auth with ChangeNotifier {
       if (responseData['error'] != null) {
         throw HttpException(message: responseData['error']['mesage']);
       }
+
+      _token = responseData['idToken'];
+      _userId = responseData['localId'];
+      _expiryDate = DateTime.now().add(
+        Duration(
+          seconds: int.parse(
+            responseData['expiredIn'],
+          ),
+        ),
+      );
+      notifyListeners();
     } catch (error) {
       throw error;
     }
