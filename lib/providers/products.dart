@@ -6,7 +6,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
 class Products with ChangeNotifier {
-  List<Product> _items = [];
+ List<Product> _items = [];
+
+  final String authToken;
+
+  Products(this.authToken, this._items);
 
   List<Product> get items {
     return [..._items];
@@ -21,7 +25,7 @@ class Products with ChangeNotifier {
   }
 
   Future<void> fetchAndSetProducts() async {
-    const url = 'https://my-eshop-5690b.firebaseio.com/products.json';
+    final url = 'https://my-eshop-5690b.firebaseio.com/products.json?auth=$authToken';
     try {
       final response = await http.get(url);
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
