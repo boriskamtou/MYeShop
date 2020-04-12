@@ -22,6 +22,10 @@ class Auth with ChangeNotifier {
     return null;
   }
 
+  String get userId {
+    return _userId;
+  }
+
   Future<void> _authentication(
       String email, String password, String urlSegment) async {
     try {
@@ -40,7 +44,7 @@ class Auth with ChangeNotifier {
 
       final responseData = json.decode(response.body);
       if (responseData['error'] != null) {
-        throw HttpException(message: responseData['error']['mesage']);
+        throw HttpException(message: responseData['error']['message']);
       }
 
       _token = responseData['idToken'];
