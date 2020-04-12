@@ -8,13 +8,13 @@ import 'package:e_commerce/providers/products.dart';
 class UserProductsScreen extends StatelessWidget {
   static const routeName = '/user-products';
 
-  Future<void> _onRefresh(BuildContext context){
-    Provider.of<Products>(context).fetchAndSetProducts();
+  Future<void> _onRefresh(BuildContext context) async {
+    await Provider.of<Products>(context, listen: false)
+        .fetchAndSetProducts(true);
   }
 
   @override
   Widget build(BuildContext context) {
-    final productData = Provider.of<Products>(context);
     return Scaffold(
       drawer: AppDrawer(),
       appBar: AppBar(
@@ -28,21 +28,30 @@ class UserProductsScreen extends StatelessWidget {
           )
         ],
       ),
-      body: RefreshIndicator(
-        onRefresh: () => _onRefresh(context),
-              child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: ListView.builder(
-            itemCount: productData.items.length,
-            itemBuilder: (_, i) => Column(
-              children: <Widget>[
-                UserProductItem(
-                  id: productData.items[i].id,
-                  title: productData.items[i].title,
-                  imageUrl: productData.items[i].imageUrl,
+      body: FutureBuilder(
+        future: _onRefresh(context),
+        builder: (ctx, snapshot) => RefreshIndicator(
+          onRefresh: () => snapshot.connectionState == ConnectionState.waiting
+              ? Center(
+                  child: CircularProgressIndicator(),
+                )
+              : _onRefresh(context),
+          child: Consumer<Products>(
+                      builder: (ctx, productData, _) => Padding(
+              padding: const EdgeInsets.all(8),
+              child: ListView.builder(
+                itemCount: productData.items.length,
+                itemBuilder: (_, i) => Column(
+                  children: <Widget>[
+                    UserProductItem(
+                      id: productData.items[i].id,
+                      title: productData.items[i].title,
+                      imageUrl: productData.items[i].imageUrl,
+                    ),
+                    Divider(),
+                  ],
                 ),
-                Divider(),
-              ],
+              ),
             ),
           ),
         ),
