@@ -9,8 +9,9 @@ class Products with ChangeNotifier {
  List<Product> _items = [];
 
   final String authToken;
+  final String userId;
 
-  Products(this.authToken, this._items);
+  Products(this.authToken, this.userId, this._items);
 
   List<Product> get items {
     return [..._items];
@@ -25,13 +26,18 @@ class Products with ChangeNotifier {
   }
 
   Future<void> fetchAndSetProducts() async {
-    final url = 'https://my-eshop-5690b.firebaseio.com/products.json?auth=$authToken';
+    var url = 'https://my-eshop-5690b.firebaseio.com/products.json?auth=$authToken';
     try {
       final response = await http.get(url);
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
       if(extractedData == null){
         return;
       }
+
+      url = 'https://my-eshop-5690b.firebaseio.com/userFavorites/$userId.json/?auth=$authToken';
+
+      final favoritesResponse = await http.get(url);
+      final favoritesData = json.decode(favoritesResponse.body);
       final List<Product> loadedProducts = [];
       extractedData.forEach((prodId, prodData) {
         loadedProducts.add(Product(
@@ -39,7 +45,7 @@ class Products with ChangeNotifier {
           title: prodData['title'],
           description: prodData['description'],
           price: prodData['price'],
-          isFavorite: prodData['isFavorite'],
+          isFavorite: favoritesData == null ? false : favoritesData[prodId] ?? false,
           imageUrl: prodData['imageUrl'],
         ));
       });
@@ -61,7 +67,6 @@ class Products with ChangeNotifier {
           'description': product.description,
           'price': product.price,
           'imageUrl': product.imageUrl,
-          'isFavorite': product.isFavorite,
         }),
       );
 

@@ -52,7 +52,7 @@ class Auth with ChangeNotifier {
       _expiryDate = DateTime.now().add(
         Duration(
           seconds: int.parse(
-            responseData['expiredIn'],
+            responseData['expiresIn'],
           ),
         ),
       );

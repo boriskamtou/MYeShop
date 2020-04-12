@@ -28,7 +28,7 @@ class Product with ChangeNotifier {
     final url = 'https://my-eshop-5690b.firebaseio.com/userFavorites/$userID/$id.json?auth=$token';
 
     try {
-      final response = await http.patch(url,
+      final response = await http.put(url,
           body: json.encode({
             'isFavorite': isFavorite,
           }));
