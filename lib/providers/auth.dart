@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:e_commerce/models/http_exception.dart';
@@ -8,6 +9,7 @@ class Auth with ChangeNotifier {
   String _token;
   DateTime _expiryDate;
   String _userId;
+  Timer _authTimer;
 
   bool get isAuth {
     return _token != null;
@@ -56,6 +58,7 @@ class Auth with ChangeNotifier {
           ),
         ),
       );
+      _autoLogout();
       notifyListeners();
     } catch (error) {
       throw error;
@@ -74,5 +77,23 @@ class Auth with ChangeNotifier {
     _userId = null;
     _token = null;
     _expiryDate = null;
+
+  if(_authTimer != null){
+    _authTimer.cancel();
+    _authTimer = null;
+  }
+
+    notifyListeners();
+  }
+
+  void _autoLogout(){
+
+    if(_authTimer != null){
+      _authTimer.cancel();
+    }
+
+
+    final expiredTime = _expiryDate.difference(DateTime.now()).inSeconds;
+    Timer(Duration(seconds: expiredTime), logout);
   }
 }
