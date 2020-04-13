@@ -1,5 +1,5 @@
-import 'dart:async';
 import 'dart:convert';
+import 'dart:async';
 
 import 'package:e_commerce/models/http_exception.dart';
 import 'package:flutter/cupertino.dart';
@@ -83,7 +83,7 @@ class Auth with ChangeNotifier {
     return _authentication(email, password, 'signInWithPassword');
   }
 
-  void logout() async {
+  Future<void> logout() async {
     _userId = null;
     _token = null;
     _expiryDate = null;
@@ -99,7 +99,7 @@ class Auth with ChangeNotifier {
     prefs.clear();
   }
 
-  Future<void> tryAutoLogin() async {
+  Future<bool> tryAutoLogin() async {
     final prefs = await SharedPreferences.getInstance();
     if(!prefs.containsKey('userData')){
       return false;
@@ -113,7 +113,7 @@ class Auth with ChangeNotifier {
     }
 
     _token = extractedUserData['token'];
-    _userId = extractedUserData['token'];
+    _userId = extractedUserData['userId'];
     _expiryDate = expiryDate;
 
     notifyListeners();
